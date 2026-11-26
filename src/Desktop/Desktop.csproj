@@ -4,6 +4,7 @@
     <AssemblyName>ImagePress</AssemblyName>
     <UseWPF>true</UseWPF>
     <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+    <SelfContained>false</SelfContained>
     <ApplicationManifest>app.manifest</ApplicationManifest>
     <SatelliteResourceLanguages>zh-Hans;zh-Hant</SatelliteResourceLanguages>
     <ApplicationIcon>../../packaging/Assets/ImagePress.ico</ApplicationIcon>

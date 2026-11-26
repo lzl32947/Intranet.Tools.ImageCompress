@@ -1,9 +1,10 @@
 Intranet.Tools.ImageCompress（压缩图片） · Windows 11 x64
 
 首次安装
-1. 解压整个分享包。双击 Intranet.Tools.ImageCompress.cer，选「安装证书」及「本地计算机」。管理员确认后，选「将所有的证书都放入下列存储」，浏览并选中「受信任人」（Trusted People）。
-2. 双击 Intranet.Tools.ImageCompress 的 .msix 文件，核对证书发布者 ImagePress Desktop Local Signing 后选择「安装」。程序内置 .NET 10 桌面运行时。
-3. 在资源管理器中选中图片，普通右键打开「压缩图片」。也可以在开始菜单搜索「压缩图片」。若刚安装时菜单尚未出现，重新打开资源管理器窗口；必要时注销并重新登录。
+1. 双击 Intranet.Tools.ImageCompress-Setup-x64.exe。安装器为当前用户安装 ImagePress.exe，并注册 Windows 11 第一层图片右键菜单。
+2. 主程序使用系统的 .NET 10 桌面运行时 x64。首次使用提示缺少运行时时，在 https://dotnet.microsoft.com/zh-cn/download/dotnet/10.0 选择「.NET Desktop Runtime」的 Windows x64 安装程序。完成后再打开「压缩图片」。
+3. 注册菜单时，如果 Windows 尚未信任随附的自签名证书，安装器会说明用途，并请求管理员确认添加到本地计算机的「受信任人」。发布者为 ImagePress Desktop Local Signing。已开启开发者模式的电脑也可使用本地清单完成菜单注册。
+4. 在资源管理器中选中一张或多张图片，右键打开「压缩图片」。也可以在开始菜单搜索「压缩图片」，或双击安装目录中的 ImagePress.exe。
 
 使用
 「压缩…」可以指定正整数 KB 并选择其他格式转 JPG 或 PNG。固定档位及「使用上次参数压缩」会立即开始。主窗口可以拖入图片并批量调整。
@@ -13,6 +14,6 @@ JPG/JPEG、PNG 保持原格式。其他静态图片支持 WebP、BMP、GIF、TIF
 开始任务时保存当前用户的参数。打开配置后按「取消」会保留原先的记录。完成列表的保存位置可点击定位，悬停可查看精确字节数与处理说明。
 
 更新和卸载
-使用同一发布者和证书的更高版本 MSIX 可直接更新。
+从 v1.0.0 升级时，直接运行新版本 EXE 安装器。它会更新菜单，并将旧版的上次参数迁移到 %LOCALAPPDATA%\Intranet.Tools.ImageCompress。
 在「设置 → 应用 → 安装的应用」中卸载「压缩图片」，右键菜单也会注销。
 如果以后不再使用此发布者，可由管理员在「管理计算机证书 → 受信任人 → 证书」移除与随包证书指纹一致的 ImagePress Desktop Local Signing 公钥证书。

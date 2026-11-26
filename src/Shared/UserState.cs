@@ -13,16 +13,14 @@ public sealed record RunOptions(long Kilobytes, bool OtherToPng)
 
 public sealed class UserState(string directory)
 {
-    private const string Family = "ImagePress.Desktop_xnxz7mp0jqdbm";
     private string SettingsFile => Path.Combine(directory, "last-run.txt");
 
-    // A packaged WPF process and a COM surrogate can otherwise receive different
-    // redirected LocalAppData locations. Both use the package's actual LocalState.
+    // The shell surrogate and the desktop EXE share the same unredirected path.
     public static UserState ForUser()
     {
         Guid local = new("F1B32785-6FBA-4FCF-9D55-7B8E7F157091");
         Marshal.ThrowExceptionForHR(SHGetKnownFolderPath(ref local, 0x00010000, 0, out nint path));
-        try { return new(Path.Combine(Marshal.PtrToStringUni(path)!, "Packages", Family, "LocalState")); }
+        try { return new(Path.Combine(Marshal.PtrToStringUni(path)!, "Intranet.Tools.ImageCompress")); }
         finally { Marshal.FreeCoTaskMem(path); }
     }
 
