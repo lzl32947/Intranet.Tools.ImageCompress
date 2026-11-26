@@ -2,6 +2,7 @@ param([string]$Version = '1.0.0.0', [string]$CertificateThumbprint)
 $ErrorActionPreference = 'Stop'
 $root = Split-Path $PSScriptRoot -Parent
 $workDir = Join-Path $root 'artifacts'
+$compileDir = Join-Path $workDir 'compile'
 $appDir = Join-Path $workDir ('layout-' + [Guid]::NewGuid().ToString('N'))
 $shellDir = Join-Path $workDir 'shell'
 $dist = Join-Path $workDir 'distribution'
@@ -15,9 +16,9 @@ $sdk = Get-ChildItem -LiteralPath (Join-Path $kit 'bin') -Directory |
 if (!$sdk) { throw 'Windows SDK x64 packaging tools are required.' }
 $tools = Join-Path $sdk.FullName 'x64'
 if (!(Test-Path -LiteralPath (Join-Path $PSScriptRoot 'Assets\ImagePress.ico'))) { & (Join-Path $PSScriptRoot 'New-Assets.ps1') }
-& dotnet publish (Join-Path $root 'src\Desktop\Desktop.csproj') -c Release -r win-x64 --self-contained true -p:DebugType=None -p:DebugSymbols=false -o $appDir
+& dotnet publish (Join-Path $root 'src\Desktop\Desktop.csproj') -c Release -r win-x64 --self-contained true --artifacts-path $compileDir -p:ContinuousIntegrationBuild=true -p:DebugType=None -p:DebugSymbols=false -o $appDir
 Assert-Native 'WPF publish'
-& dotnet publish (Join-Path $root 'src\Shell\Shell.csproj') -c Release -r win-x64 -o $shellDir
+& dotnet publish (Join-Path $root 'src\Shell\Shell.csproj') -c Release -r win-x64 --artifacts-path $compileDir -p:ContinuousIntegrationBuild=true -p:DebugType=None -p:NativeDebugSymbols=false -o $shellDir
 Assert-Native 'Native AOT publish'
 
 # A fresh staging folder excludes obsolete files from earlier packages.
