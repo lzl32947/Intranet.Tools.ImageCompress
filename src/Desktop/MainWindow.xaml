@@ -1,0 +1,87 @@
+<Window x:Class="ImagePress.Desktop.MainWindow"
+ xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+ xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+ Title="压缩图片" Width="1000" Height="640" MinWidth="610" MinHeight="385" WindowStartupLocation="CenterScreen"
+ Background="#F5F8F5" Foreground="{StaticResource Ink}" FontFamily="Segoe UI Variable Text, Microsoft YaHei UI"
+ FontSize="14" AllowDrop="True" PreviewDrop="DropFiles" PreviewDragOver="DragFiles" Closing="WindowClosing">
+ <Grid Margin="24,19,24,16">
+  <Grid.RowDefinitions>
+   <RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/>
+   <RowDefinition Height="*"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/>
+  </Grid.RowDefinitions>
+  <DockPanel LastChildFill="True" Margin="0,0,0,15">
+   <Border DockPanel.Dock="Left" Width="5" Margin="0,3,12,1" CornerRadius="2" Background="{StaticResource Accent}"/>
+   <StackPanel>
+    <TextBlock x:Name="Heading" Text="压缩图片" FontSize="25" FontWeight="SemiBold"/>
+    <TextBlock x:Name="SelectionSummary" Foreground="#536A60" Margin="0,4,0,0" TextWrapping="Wrap" TextTrimming="CharacterEllipsis"/>
+   </StackPanel>
+  </DockPanel>
+  <Border x:Name="SettingsPanel" Grid.Row="1" Padding="16,13" CornerRadius="8" Background="White" BorderThickness="1" BorderBrush="{StaticResource Line}">
+   <StackPanel>
+    <TextBlock Text="每张图片的大小上限" FontWeight="SemiBold" Margin="0,0,0,7"/>
+    <WrapPanel VerticalAlignment="Center">
+     <RadioButton x:Name="Pick500" GroupName="Size" Style="{StaticResource Preset}" Content="500 KB" Checked="PresetChanged"/>
+     <RadioButton x:Name="Pick1000" GroupName="Size" Style="{StaticResource Preset}" Content="1000 KB" Checked="PresetChanged"/>
+     <RadioButton x:Name="PickCustom" GroupName="Size" Style="{StaticResource Preset}" Content="自定义" Checked="PresetChanged"/>
+     <StackPanel x:Name="CustomPanel" Orientation="Horizontal" VerticalAlignment="Center">
+      <TextBox x:Name="CustomSize" MinWidth="85" MaxWidth="165" Padding="6,3" VerticalContentAlignment="Center" AutomationProperties.Name="自定义大小" TextChanged="SizeEdited"/>
+      <TextBlock Text=" KB" VerticalAlignment="Center" Margin="3,0,0,0"/>
+     </StackPanel>
+    </WrapPanel>
+    <WrapPanel Margin="0,12,0,0">
+     <TextBlock Text="其他格式转为" VerticalAlignment="Center" Margin="0,0,9,0"/>
+     <ComboBox x:Name="OtherFormat" MinWidth="83" Padding="5,3" AutomationProperties.Name="其他格式输出">
+      <ComboBoxItem Content="JPG"/><ComboBoxItem Content="PNG"/>
+     </ComboBox>
+     <TextBlock Text="JPG、PNG 保留原格式" Foreground="#5E7168" FontSize="12" VerticalAlignment="Center" Margin="12,0,0,0"/>
+    </WrapPanel>
+   </StackPanel>
+  </Border>
+  <DockPanel x:Name="ListToolbar" Grid.Row="2" Margin="0,15,0,8">
+   <StackPanel x:Name="ListActions" DockPanel.Dock="Right" Orientation="Horizontal">
+    <Button x:Name="AddButton" Content="添加图片…" Click="AddFiles"/><Button x:Name="RemoveButton" Content="移除选中" Click="RemoveFiles" Margin="0"/>
+   </StackPanel>
+   <TextBlock x:Name="ListTitle" Text="图片列表" FontWeight="SemiBold" VerticalAlignment="Center"/>
+  </DockPanel>
+  <Grid x:Name="ListArea" Grid.Row="3">
+   <Border CornerRadius="6" Background="White" BorderThickness="1" BorderBrush="{StaticResource Line}" ClipToBounds="True">
+    <DataGrid x:Name="FileGrid" AutoGenerateColumns="False" CanUserAddRows="False" CanUserDeleteRows="False"
+     CanUserReorderColumns="False" CanUserSortColumns="False" IsReadOnly="True" SelectionMode="Extended" HeadersVisibility="Column"
+     BorderThickness="0" Background="White" RowHeaderWidth="0" GridLinesVisibility="Horizontal" HorizontalGridLinesBrush="#EBEFEB"
+     RowBackground="White" AlternatingRowBackground="#FAFCFA" RowHeight="33" FontSize="12" SelectionChanged="SelectionChangedInList"
+     ScrollViewer.HorizontalScrollBarVisibility="Auto" ScrollViewer.VerticalScrollBarVisibility="Auto" AutomationProperties.Name="图片列表">
+     <DataGrid.Resources>
+      <Style TargetType="DataGridColumnHeader"><Setter Property="Background" Value="#EBF2ED"/><Setter Property="Padding" Value="8,7"/><Setter Property="Foreground" Value="#374D42"/><Setter Property="BorderThickness" Value="0"/></Style>
+      <Style TargetType="DataGridCell"><Setter Property="BorderThickness" Value="0"/><Setter Property="Padding" Value="6,1"/><Setter Property="VerticalContentAlignment" Value="Center"/></Style>
+      <Style x:Key="CellText" TargetType="TextBlock"><Setter Property="VerticalAlignment" Value="Center"/><Setter Property="Margin" Value="7,0"/><Setter Property="TextTrimming" Value="CharacterEllipsis"/><Setter Property="ToolTip" Value="{Binding Description}"/></Style>
+     </DataGrid.Resources>
+     <DataGrid.Columns>
+      <DataGridTextColumn Header="原文件" Binding="{Binding Name}" Width="1.1*" MinWidth="90" ElementStyle="{StaticResource CellText}"/>
+      <DataGridTextColumn Header="状态" Binding="{Binding Status}" Width="105" ElementStyle="{StaticResource CellText}"/>
+      <DataGridTextColumn Header="原大小 → 输出" Binding="{Binding Sizes}" Width="155" ElementStyle="{StaticResource CellText}"/>
+      <DataGridTextColumn Header="分辨率" Binding="{Binding Pixels}" Width="1.2*" MinWidth="104" ElementStyle="{StaticResource CellText}"/>
+      <DataGridTemplateColumn Header="保存位置" Width="1.35*" MinWidth="104">
+       <DataGridTemplateColumn.CellTemplate><DataTemplate>
+        <TextBlock VerticalAlignment="Center" Margin="7,0" TextTrimming="CharacterEllipsis" ToolTip="{Binding Description}">
+         <Hyperlink Click="Reveal" Foreground="#156B60"><Run Text="{Binding Output, Mode=OneWay}"/></Hyperlink>
+        </TextBlock>
+       </DataTemplate></DataGridTemplateColumn.CellTemplate>
+      </DataGridTemplateColumn>
+     </DataGrid.Columns>
+    </DataGrid>
+   </Border>
+   <TextBlock x:Name="EmptyHint" IsHitTestVisible="False" Text="拖入图片，或点击「添加图片」" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="#617A6A"/>
+  </Grid>
+  <StackPanel Grid.Row="4">
+   <ProgressBar x:Name="Progress" Height="5" Margin="0,13,0,0" Minimum="0" Visibility="Collapsed" Foreground="{StaticResource Accent}"/>
+   <TextBlock x:Name="Feedback" Margin="0,9,0,0" TextWrapping="Wrap" Foreground="#555F55"/>
+  </StackPanel>
+  <DockPanel Grid.Row="5" Margin="0,12,0,0">
+   <StackPanel DockPanel.Dock="Right" Orientation="Horizontal">
+    <Button x:Name="Secondary" Content="关闭" Click="SecondaryClick"/>
+    <Button x:Name="StartButton" Content="开始压缩" IsDefault="True" Click="StartClick" Background="{StaticResource Accent}" Foreground="White" BorderBrush="{StaticResource Accent}" Padding="20,8" Margin="0"/>
+   </StackPanel>
+   <TextBlock x:Name="Footer" Text="输出到原图所在文件夹" VerticalAlignment="Center" Foreground="#587064" FontSize="12"/>
+  </DockPanel>
+ </Grid>
+</Window>

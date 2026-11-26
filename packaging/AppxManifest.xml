@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Package xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10"
+ xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10"
+ xmlns:rescap="http://schemas.microsoft.com/appx/manifest/foundation/windows10/restrictedcapabilities"
+ xmlns:com="http://schemas.microsoft.com/appx/manifest/com/windows10"
+ xmlns:desktop4="http://schemas.microsoft.com/appx/manifest/desktop/windows10/4"
+ xmlns:desktop5="http://schemas.microsoft.com/appx/manifest/desktop/windows10/5"
+ IgnorableNamespaces="uap rescap com desktop4 desktop5">
+  <Identity Name="ImagePress.Desktop" Publisher="CN=ImagePress Desktop Local Signing" Version="1.0.0.0" ProcessorArchitecture="x64"/>
+  <Properties>
+    <DisplayName>压缩图片</DisplayName>
+    <PublisherDisplayName>ImagePress</PublisherDisplayName>
+    <Description>按指定文件大小压缩图片</Description>
+    <Logo>Assets\StoreLogo.png</Logo>
+  </Properties>
+  <Dependencies><TargetDeviceFamily Name="Windows.Desktop" MinVersion="10.0.22000.0" MaxVersionTested="10.0.26100.0"/></Dependencies>
+  <Resources><Resource Language="zh-CN"/></Resources>
+  <Applications>
+    <Application Id="App" Executable="ImagePress.exe" EntryPoint="Windows.FullTrustApplication">
+      <uap:VisualElements DisplayName="压缩图片" Description="压缩图片" BackgroundColor="transparent"
+        Square150x150Logo="Assets\Square150.png" Square44x44Logo="Assets\Square44.png"/>
+      <Extensions>
+        <com:Extension Category="windows.comServer"><com:ComServer>
+          <com:SurrogateServer DisplayName="压缩图片"><com:Class Id="5F9DD25E-9BB3-46FC-9BAB-921BFB5D5D1F" Path="ImagePressShell.dll" ThreadingModel="Both"/></com:SurrogateServer>
+        </com:ComServer></com:Extension>
+        <desktop4:Extension Category="windows.fileExplorerContextMenus"><desktop4:FileExplorerContextMenus>
+          <desktop5:ItemType Type="*"><desktop5:Verb Id="ImagePressCompress" Clsid="5F9DD25E-9BB3-46FC-9BAB-921BFB5D5D1F"/></desktop5:ItemType>
+        </desktop4:FileExplorerContextMenus></desktop4:Extension>
+      </Extensions>
+    </Application>
+  </Applications>
+  <Capabilities><rescap:Capability Name="runFullTrust"/></Capabilities>
+</Package>

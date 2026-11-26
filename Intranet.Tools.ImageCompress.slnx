@@ -1,0 +1,5 @@
+<Solution>
+  <Project Path="src/Engine/Engine.csproj" />
+  <Project Path="src/Desktop/Desktop.csproj" />
+  <Project Path="src/Shell/Shell.csproj" />
+</Solution>
